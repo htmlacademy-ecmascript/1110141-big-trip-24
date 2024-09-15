@@ -76,11 +76,13 @@ const OFFERS = [
     offers: [
       {
         id: 1,
-        title: 'Какой-то заголовок'
+        title: 'Заголовок',
+        price: getRandomInteger()
       },
       {
         id: 2,
-        title: 'Какой-то заголовок №2'
+        title: 'Заголовок №2',
+        price: getRandomInteger()
       }
     ]
   },
@@ -89,15 +91,18 @@ const OFFERS = [
     offers: [
       {
         id: 1,
-        title: 'Какой-то заголовок №3'
+        title: 'Заголовок №3',
+        price: getRandomInteger()
       },
       {
         id: 2,
-        title: 'Какой-то заголовок №4'
+        title: 'Заголовок №4',
+        price: getRandomInteger()
       },
       {
         id: 3,
-        title: 'Какой-то заголовок №5'
+        title: 'Заголовок №5',
+        price: getRandomInteger()
       }
     ]
   },
@@ -106,22 +111,23 @@ const OFFERS = [
     offers: [
       {
         id: 1,
-        title: 'Какой-то заголовок №6'
+        title: 'Заголовок №6',
+        price: getRandomInteger()
       },
     ]
   }
 ];
 
-const mockEventPoints = [
+const mockEvents = [
   {
     id: 1,
     type: getRandomArrayElement(EVENT_POINTS_TYPES),
     destination: getRandomArrayElement(DESTINATION_POINTS).id,
     date_from: new Date('2019-08-17 09:00'),
-    date_to: new Date('2019-12-25 18:00'),
+    date_to: new Date('2019-08-17 18:00'),
     base_price: getRandomInteger(),
     is_favorite: false,
-    offers: getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id,
+    offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
   },
   {
     id: 2,
@@ -131,7 +137,7 @@ const mockEventPoints = [
     date_to: new Date('2020-01-13 21:30'),
     base_price: getRandomInteger(),
     is_favorite: false,
-    offers: getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id,
+    offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
   },
   {
     id: 3,
@@ -141,7 +147,7 @@ const mockEventPoints = [
     date_to: new Date('2020-03-05 02:15'),
     base_price: getRandomInteger(),
     is_favorite: true,
-    offers: getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id,
+    offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
   },
   {
     id: 4,
@@ -151,7 +157,7 @@ const mockEventPoints = [
     date_to: new Date('2020-05-17 18:00'),
     base_price: getRandomInteger(),
     is_favorite: false,
-    offers: getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id,
+    offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
   },
   {
     id: 5,
@@ -161,10 +167,10 @@ const mockEventPoints = [
     date_to: new Date('2021-04-10 23:30'),
     base_price: getRandomInteger(),
     is_favorite: true,
-    offers: getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id,
+    offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
   },
 ];
 
-const getRandomEventPoint = () => getRandomArrayElement(mockEventPoints);
+const getRandomEvent = () => getRandomArrayElement(mockEvents);
 
-export { getRandomEventPoint };
+export { getRandomEvent, DESTINATION_POINTS, OFFERS };
