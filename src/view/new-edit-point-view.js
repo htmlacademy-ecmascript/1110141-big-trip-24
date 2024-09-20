@@ -1,88 +1,21 @@
 import { createElement } from '../render';
-import { humanizeEventDate, formatDate, calculateDifference, getCityInfoByID, getOfferInfoById, capitalizeFirstLetter} from '../util';
-import { DESTINATION_POINTS, OFFERS } from '../mock/trip-event-point';
+
 
 function createEditPointTemplate (event) {
 
-  const { base_price, date_from, date_to, destination, offers, type} = event;
-
-  const lowercaseType = type.toLowerCase();
-
-  // Получаем информацию о пункте назначения
-  const cityInfo = getCityInfoByID(destination, DESTINATION_POINTS);
-  // Получаем дату-вреся начала события
-  const eventDatetimeFrom = formatDate(date_from, 'D/M/YY HH:mm');
-  // Получаем дату-время конца события
-  const eventDatetimeTo = formatDate(date_to, 'D/M/YY HH:mm');
-
-  // Получаем список возможных пунктовн назнчачения для datalist
-  let destinationListOptions = '';
-  DESTINATION_POINTS.forEach((point) => {
-    destinationListOptions += `<option value="${ point.name }"></option>`;
-  });
-
-  // Получаем список типов событий
-  let eventTypeItemsList = '';
-  // Получаем все офферы того же типа что и событие
-  let eventOfferItemsList = '';
-
-  OFFERS.forEach((point) => {
-    const eventType = point.type.toLowerCase();
-    let typeCheckedAttribute = '';
-    if (lowercaseType === eventType) {
-      typeCheckedAttribute = 'checked';
-      // Проверяем есть ли у данного события офферы
-      point.offers.forEach((offer) => {
-        const offerTitle = offer.title;
-        const offerPrice = offer.price;
-        // Проверяем есть ли у данного события выбранные (чекнутые) офферы
-        const offerCheckedAttribute = offers.find((offerItem) => offer.id === offerItem) ? 'checked' : '';
-        eventOfferItemsList += `<div class="event__offer-selector">
-                                  <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${offerCheckedAttribute}>
-                                  <label class="event__offer-label" for="event-offer-luggage-1">
-                                    <span class="event__offer-title">${offerTitle}</span>
-                                    &plus;&euro;&nbsp;
-                                    <span class="event__offer-price">${offerPrice}</span>
-                                  </label>
-                                </div>`;
-      });
-    }
-    eventTypeItemsList += `<div class="event__type-item">
-                            <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}" ${typeCheckedAttribute}>
-                            <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${capitalizeFirstLetter(eventType)}</label>
-                          </div>`;
-  });
-
-  let offersSection = '';
-  if (eventOfferItemsList) {
-    offersSection = `<section class="event__section  event__section--offers">
-                      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-                      <div class="event__available-offers">
-                        ${eventOfferItemsList}
-                      </div>
-                    </section>`;
-  }
-
-  let descriptionSection = '';
-  if (cityInfo.description) {
-    descriptionSection = `<section class="event__section  event__section--destination">
-                            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                            <p class="event__destination-description">${cityInfo.description}</p>
-                          </section>`;
-  }
-
-  let photosContainer = '';
-  if (cityInfo.pictures.length) {
-    let pictures = '';
-    cityInfo.pictures.forEach((picture) => {
-      pictures += `<img class="event__photo" src="${picture.src}" alt="${picture.description} photo"></img>`;
-    });
-    photosContainer = `<div class="event__photos-container">
-                        <div class="event__photos-tape">
-                          ${pictures}
-                        </div>
-                      </div>`;
-  }
+  const {
+    lowercaseType,
+    eventTypeItemsList,
+    type,
+    cityInfo,
+    destinationListOptions,
+    photosContainer,
+    eventDatetimeFrom,
+    eventDatetimeTo,
+    base_price,
+    offersSection,
+    descriptionSection
+  } = event;
 
   return `<li class="trip-events__item">
             <form class="event event--edit" action="#" method="post">
@@ -125,7 +58,7 @@ function createEditPointTemplate (event) {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${base_price.toLocaleString('ru-RU')}">
+                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${ base_price }">
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>

@@ -46,19 +46,20 @@ const calculateDifference = (dateFrom, dateTo) => {
   const start = dayjs(dateFrom);
   const end = dayjs(dateTo);
   const diffInMinutes = end.diff(start, 'minute');
+  let minutes;
   if (diffInMinutes < 60) {
     return `${diffInMinutes}M`;
   }
 
   const diffInHours = end.diff(start, 'hour');
   if (diffInHours < 24) {
-    const minutes = diffInMinutes % 60;
+    minutes = diffInMinutes % 60;
     return `${diffInHours}H ${minutes}M`;
   }
 
   const diffInDays = end.diff(start, 'day');
   const hours = diffInHours % 24;
-  const minutes = diffInMinutes % 60;
+  minutes = diffInMinutes % 60;
   return `${diffInDays}D ${hours}H ${minutes}M`;
 };
 
