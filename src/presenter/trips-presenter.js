@@ -4,7 +4,7 @@ import NewAddPointView from '../view/new-add-new-point-view';
 import NewEditPointView from '../view/new-edit-point-view';
 import NewListView from '../view/new-list-view';
 import NewEventView from '../view/new-event-point-view';
-import { render } from '../render';
+import { render } from '../framework/render';
 import { formatDate, getCityInfoByID, capitalizeFirstLetter} from '../util';
 import { DESTINATION_POINTS, OFFERS } from '../mock/trip-event-point';
 
@@ -114,7 +114,7 @@ export default class TripsPresenter {
     this.tripPoints = [...this.tripsModel.getEvents()];
     render(new NewListFilterView(), this.body.querySelector('.trip-controls__filters'));
     render(new NewListSortView(), this.body.querySelector('.trip-events'));
-    this.tripList = this.listElement.getElement();
+    this.tripList = this.listElement.element;
     render(this.listElement, this.body.querySelector('.trip-events'));
     render(new NewAddPointView(), this.tripList);
 
