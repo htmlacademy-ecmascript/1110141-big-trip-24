@@ -39,7 +39,7 @@ function createNewEventTemplate (event) {
   offersInfo.forEach((offerInfo) => {
     if (offerInfo) {
       const newEventOffer = new NewEventOfferView({offer: offerInfo});
-      offersHTML += newEventOffer.getTemplate();
+      offersHTML += newEventOffer.template;
     }
   });
 
