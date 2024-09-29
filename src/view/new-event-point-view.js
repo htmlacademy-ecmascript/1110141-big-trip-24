@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import { humanizeEventDate, formatDate, calculateDifference, getCityInfoByID, getOfferInfoById} from '../util';
 import { DESTINATION_POINTS, OFFERS } from '../mock/trip-event-point';
 import NewEventOfferView from './new-event-offer-view';
@@ -77,25 +77,15 @@ function createNewEventTemplate (event) {
               </div>
             </li>`;
 }
+export default class NewEventView extends AbstractView {
+  #event = null;
 
-export default class NewEventView {
   constructor ({event}) {
-    this.event = event;
+    super();
+    this.#event = event;
   }
 
-  getTemplate() {
-    return createNewEventTemplate(this.event);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createNewEventTemplate(this.#event);
   }
 }
