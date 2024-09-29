@@ -79,13 +79,23 @@ function createNewEventTemplate (event) {
 }
 export default class NewEventView extends AbstractView {
   #event = null;
+  #onEventRollupClick = null;
 
-  constructor ({event}) {
+  constructor ({event, onEventRollupClick}) {
     super();
     this.#event = event;
+    // Получаем обработчик клика кнопки-стрелки снаружи
+    this.#onEventRollupClick = onEventRollupClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', (clickEvent) => this.#onEventRollupClickHandle(clickEvent));
   }
 
   get template() {
     return createNewEventTemplate(this.#event);
+  }
+
+  // Делаем на основе обработчика новый обработчик
+  #onEventRollupClickHandle (clickEvent) {
+    clickEvent.preventDefault();
+    this.#onEventRollupClick();
   }
 }

@@ -88,4 +88,11 @@ const capitalizeFirstLetter = (word) => {
   return word.charAt(0).toUpperCase() + word.slice(1);
 };
 
-export {getRandomArrayElement, getRandomInteger, humanizeEventDate, formatDate, calculateDifference, getCityInfoByID, getOfferInfoById, capitalizeFirstLetter };
+/**
+ * Проверяет была ли нажата кнопка Escape
+ * @param {Event} event - событие keydown
+ * @returns {boolean} - возвращает true, если была нажата кнопка Escape
+ */
+const isEscapeKey = (event) => event.key === 'Escape';
+
+export {getRandomArrayElement, getRandomInteger, humanizeEventDate, formatDate, calculateDifference, getCityInfoByID, getOfferInfoById, capitalizeFirstLetter, isEscapeKey };
