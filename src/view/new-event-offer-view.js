@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 
 function createNewEventOfferTemplate (offer) {
 
@@ -11,25 +11,16 @@ function createNewEventOfferTemplate (offer) {
                   </li>`;
 }
 
-export default class NewEventOfferView {
+export default class NewEventOfferView extends AbstractView {
+
+  #offer = null;
 
   constructor ({offer}) {
-    this.offer = offer;
+    super();
+    this.#offer = offer;
   }
 
-  getTemplate() {
-    return createNewEventOfferTemplate(this.offer);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createNewEventOfferTemplate(this.#offer);
   }
 }

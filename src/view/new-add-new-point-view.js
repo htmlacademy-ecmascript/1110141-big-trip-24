@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 
 function createNewAddPointTemplate () {
   return `<li class="trip-events__item">
@@ -165,20 +165,8 @@ function createNewAddPointTemplate () {
             </li>`;
 }
 
-export default class NewAddPointView {
-  getTemplate() {
+export default class NewAddPointView extends AbstractView {
+  get template() {
     return createNewAddPointTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

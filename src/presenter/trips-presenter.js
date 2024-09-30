@@ -4,8 +4,8 @@ import NewAddPointView from '../view/new-add-new-point-view';
 import NewEditPointView from '../view/new-edit-point-view';
 import NewListView from '../view/new-list-view';
 import NewEventView from '../view/new-event-point-view';
-import { render } from '../render';
-import { formatDate, getCityInfoByID, capitalizeFirstLetter} from '../util';
+import { render, replace } from '../framework/render';
+import { formatDate, getCityInfoByID, capitalizeFirstLetter, isEscapeKey} from '../util';
 import { DESTINATION_POINTS, OFFERS } from '../mock/trip-event-point';
 
 export default class TripsPresenter {
@@ -95,6 +95,7 @@ export default class TripsPresenter {
                         </div>`;
     }
 
+    // Возвращаем подготовленные для использования данные
     return {
       lowercaseType,
       base_price,
@@ -114,14 +115,51 @@ export default class TripsPresenter {
     this.tripPoints = [...this.tripsModel.getEvents()];
     render(new NewListFilterView(), this.body.querySelector('.trip-controls__filters'));
     render(new NewListSortView(), this.body.querySelector('.trip-events'));
-    this.tripList = this.listElement.getElement();
+    this.tripList = this.listElement.element;
     render(this.listElement, this.body.querySelector('.trip-events'));
-    render(new NewAddPointView(), this.tripList);
+    // render(new NewAddPointView(), this.tripList);
 
     for (let i = 0; i < this.tripPoints.length; i++) {
-      render(new NewEventView({event: this.tripPoints[i]}), this.tripList);
+      this.#renderEvent(this.tripPoints[i]);
+    }
+  }
+
+  #renderEvent (event) {
+    const onEscapeKeyDown = (keydownEvent) => {
+      if (isEscapeKey(keydownEvent)) {
+        keydownEvent.preventDefault();
+        changeFormOnEvent();
+        document.removeEventListener('keydown', onEscapeKeyDown);
+      }
+    };
+
+
+    // Создаём экземпляры классов точки события и формы редактирования
+    const eventView = new NewEventView({event, onEventRollupClick});
+    const editPointView = new NewEditPointView({event: this.prepareDataFormEditPointView(this.tripPoints[0]), onEditPointSubmit});
+
+    // Смена точки события на форму редактирования события
+    function changeEventOnForm () {
+      replace(editPointView, eventView);
     }
 
-    render(new NewEditPointView({event: this.prepareDataFormEditPointView(this.tripPoints[0])}), this.tripList);
+    // Смена точки формы редактирования события на точку события
+    function changeFormOnEvent () {
+      replace(eventView, editPointView);
+    }
+
+    // Обработчик клика по кнопке раскрытия точки маршрута
+    function onEventRollupClick () {
+      changeEventOnForm();
+      document.addEventListener('keydown', onEscapeKeyDown);
+    }
+
+    // Обработчик клика по кнопке скрытия формы редактирования точки маршрута
+    function onEditPointSubmit () {
+      changeFormOnEvent();
+      document.removeEventListener('keydown', onEscapeKeyDown);
+    }
+
+    render(eventView, this.tripList);
   }
 }

@@ -8,7 +8,7 @@ const DESTINATION_POINTS = [
     name:'London',
     pictures: [
       {
-        src: `https://loremflickr.com/248/152?random=${getRandomInteger}`,
+        src: `https://loremflickr.com/248/152?random=${getRandomInteger()}`,
         description: 'Chamonix parliament building'
       },
     ]
@@ -19,7 +19,7 @@ const DESTINATION_POINTS = [
     name:'Tokyo',
     pictures: [
       {
-        src: `https://loremflickr.com/248/152?random=${getRandomInteger}`,
+        src: `https://loremflickr.com/248/152?random=${getRandomInteger()}`,
         description: 'Chamonix parliament building'
       },
     ]
@@ -30,7 +30,7 @@ const DESTINATION_POINTS = [
     name:'Berlin',
     pictures: [
       {
-        src: `https://loremflickr.com/248/152?random=${getRandomInteger}`,
+        src: `https://loremflickr.com/248/152?random=${getRandomInteger()}`,
         description: 'Chamonix parliament building'
       },
     ]
@@ -41,7 +41,7 @@ const DESTINATION_POINTS = [
     name:'Sydney',
     pictures: [
       {
-        src: `https://loremflickr.com/248/152?random=${getRandomInteger}`,
+        src: `https://loremflickr.com/248/152?random=${getRandomInteger()}`,
         description: 'Chamonix parliament building'
       },
     ]
@@ -52,7 +52,7 @@ const DESTINATION_POINTS = [
     name:'Buenos Aires',
     pictures: [
       {
-        src: `https://loremflickr.com/248/152?random=${getRandomInteger}`,
+        src: `https://loremflickr.com/248/152?random=${getRandomInteger()}`,
         description: 'Chamonix parliament building'
       },
     ]
@@ -63,7 +63,7 @@ const DESTINATION_POINTS = [
     name:'Cairo',
     pictures: [
       {
-        src: `https://loremflickr.com/248/152?random=${getRandomInteger}`,
+        src: `https://loremflickr.com/248/152?random=${getRandomInteger()}`,
         description: 'Chamonix parliament building'
       },
     ]

@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import { humanizeEventDate, formatDate, calculateDifference, getCityInfoByID, getOfferInfoById} from '../util';
 import { DESTINATION_POINTS, OFFERS } from '../mock/trip-event-point';
 import NewEventOfferView from './new-event-offer-view';
@@ -39,7 +39,7 @@ function createNewEventTemplate (event) {
   offersInfo.forEach((offerInfo) => {
     if (offerInfo) {
       const newEventOffer = new NewEventOfferView({offer: offerInfo});
-      offersHTML += newEventOffer.getTemplate();
+      offersHTML += newEventOffer.template;
     }
   });
 
@@ -77,25 +77,25 @@ function createNewEventTemplate (event) {
               </div>
             </li>`;
 }
+export default class NewEventView extends AbstractView {
+  #event = null;
+  #onEventRollupClick = null;
 
-export default class NewEventView {
-  constructor ({event}) {
-    this.event = event;
+  constructor ({event, onEventRollupClick}) {
+    super();
+    this.#event = event;
+    // Получаем обработчик клика кнопки-стрелки снаружи
+    this.#onEventRollupClick = onEventRollupClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', (clickEvent) => this.#onEventRollupClickHandle(clickEvent));
   }
 
-  getTemplate() {
-    return createNewEventTemplate(this.event);
+  get template() {
+    return createNewEventTemplate(this.#event);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  // Делаем на основе обработчика новый обработчик
+  #onEventRollupClickHandle (clickEvent) {
+    clickEvent.preventDefault();
+    this.#onEventRollupClick();
   }
 }
