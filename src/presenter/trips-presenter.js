@@ -1,6 +1,6 @@
 import NewListFilterView from '../view/new-list-filter-view';
 import NewListSortView from '../view/new-list-sort-view';
-import NewAddPointView from '../view/new-add-new-point-view';
+// import NewAddPointView from '../view/new-add-new-point-view';
 import NewEditPointView from '../view/new-edit-point-view';
 import NewListView from '../view/new-list-view';
 import NewEventView from '../view/new-event-point-view';
@@ -15,7 +15,12 @@ export default class TripsPresenter {
     this.tripsModel = tripsModel;
   }
 
-  prepareDataFormEditPointView (event) {
+  /**
+   * Подготавливает данные для формы редактирования точки маршрута.
+   * @param {object} event - Объект события.
+   * @returns {object} - Объект с подготовленными данными.
+   */
+  #prepareDataFormEditPointView (event) {
     const { base_price, date_from, date_to, destination, offers, type } = event;
 
     const lowercaseType = type.toLowerCase();
@@ -64,6 +69,7 @@ export default class TripsPresenter {
                               </div>`;
     });
 
+    // Фиксируем шаблон секции с офферами
     let offersSection = '';
     if (eventOfferItemsList) {
       offersSection = `<section class="event__section  event__section--offers">
@@ -74,6 +80,7 @@ export default class TripsPresenter {
                       </section>`;
     }
 
+    // Фиксируем шаблон секции с описанием пункта на значения
     let descriptionSection = '';
     if (cityInfo.description) {
       descriptionSection = `<section class="event__section  event__section--destination">
@@ -82,6 +89,7 @@ export default class TripsPresenter {
                             </section>`;
     }
 
+    // Фиксируем шаблон блока с изображениями и шаблон самих изображений
     let photosContainer = '';
     if (cityInfo.pictures.length) {
       let pictures = '';
@@ -111,20 +119,44 @@ export default class TripsPresenter {
     };
   }
 
+  /**
+   * Метод инициализации страницы.
+   */
   init() {
+    // Получаем данные из модели
     this.tripPoints = [...this.tripsModel.getEvents()];
+
+    // Вызываем метод отрисовывающий необходимые элементы
+    this.#renderTrips();
+  }
+
+  /**
+   * Метод отрисовки элементов на странице.
+   */
+  #renderTrips = () => {
+    // Отрисовываем фильтры
     render(new NewListFilterView(), this.body.querySelector('.trip-controls__filters'));
+    // Отрисовываем сортировку
     render(new NewListSortView(), this.body.querySelector('.trip-events'));
+    // Получаем DOM элемент списка точек маршрута
     this.tripList = this.listElement.element;
+    // Отрисовываем этот список
     render(this.listElement, this.body.querySelector('.trip-events'));
+
     // render(new NewAddPointView(), this.tripList);
 
+    // Отрисовываем точки маршрута в цикле
     for (let i = 0; i < this.tripPoints.length; i++) {
       this.#renderEvent(this.tripPoints[i]);
     }
-  }
+  };
 
-  #renderEvent (event) {
+  /**
+   * Метод отрисовки точек маршрута с формами редактирования, а также закрепляем логику взаимодействия с элементами.
+   * @param {object} event - Объект события.
+   */
+  #renderEvent = (event) => {
+    // Функция скрывающая форму редактирования при нажатии ESC
     const onEscapeKeyDown = (keydownEvent) => {
       if (isEscapeKey(keydownEvent)) {
         keydownEvent.preventDefault();
@@ -136,7 +168,7 @@ export default class TripsPresenter {
 
     // Создаём экземпляры классов точки события и формы редактирования
     const eventView = new NewEventView({event, onEventRollupClick});
-    const editPointView = new NewEditPointView({event: this.prepareDataFormEditPointView(this.tripPoints[0]), onEditPointSubmit});
+    const editPointView = new NewEditPointView({event: this.#prepareDataFormEditPointView(event), onEditPointSubmit});
 
     // Смена точки события на форму редактирования события
     function changeEventOnForm () {
@@ -161,5 +193,5 @@ export default class TripsPresenter {
     }
 
     render(eventView, this.tripList);
-  }
+  };
 }
