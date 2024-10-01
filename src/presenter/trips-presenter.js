@@ -4,6 +4,7 @@ import NewListSortView from '../view/new-list-sort-view';
 import NewEditPointView from '../view/new-edit-point-view';
 import NewListView from '../view/new-list-view';
 import NewEventView from '../view/new-event-point-view';
+import NewNoPointView from '../view/no-points-view';
 import { render, replace } from '../framework/render';
 import { formatDate, getCityInfoByID, capitalizeFirstLetter, isEscapeKey} from '../util';
 import { DESTINATION_POINTS, OFFERS } from '../mock/trip-event-point';
@@ -131,23 +132,33 @@ export default class TripsPresenter {
   }
 
   /**
-   * Метод отрисовки элементов на странице.
+   * Метод отрисовки элементов на странице
    */
+
+  // TODO: Переделать так, чтобы отрисовывать не в this.body.querySelector('.trip-controls__filters') а в, например, this.tripMain.element
   #renderTrips = () => {
     // Отрисовываем фильтры
     render(new NewListFilterView(), this.body.querySelector('.trip-controls__filters'));
-    // Отрисовываем сортировку
-    render(new NewListSortView(), this.body.querySelector('.trip-events'));
+
     // Получаем DOM элемент списка точек маршрута
     this.tripList = this.listElement.element;
-    // Отрисовываем этот список
-    render(this.listElement, this.body.querySelector('.trip-events'));
 
     // render(new NewAddPointView(), this.tripList);
 
-    // Отрисовываем точки маршрута в цикле
-    for (let i = 0; i < this.tripPoints.length; i++) {
-      this.#renderEvent(this.tripPoints[i]);
+    // Проверяем, есть ли точки маршрута для отображения
+    // TODO: Пока так, потом надо будет переделать фразы под каждый фильтр
+    if (this.tripPoints.length === 0) {
+      // Если точек маршрута нет — выводим сообщение
+      render(new NewNoPointView(), this.body.querySelector('.trip-events'));
+    } else {
+      // Отрисовываем сортировку
+      render(new NewListSortView(), this.body.querySelector('.trip-events'));
+      // Отрисовываем этот список
+      render(this.listElement, this.body.querySelector('.trip-events'));
+      // Отрисовываем точки маршрута в цикле
+      for (let i = 0; i < this.tripPoints.length; i++) {
+        this.#renderEvent(this.tripPoints[i]);
+      }
     }
   };
 
