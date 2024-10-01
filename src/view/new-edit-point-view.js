@@ -87,15 +87,15 @@ export default class NewEditPointView extends AbstractView {
     this.#event = event;
     // Получаем обработчик сабмита формы снаружи
     this.#onEditPointSubmit = onEditPointSubmit;
-    this.element.querySelector('.event').addEventListener('submit', (submitEvent) => this.#onEditPointSubmitHandle(submitEvent));
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', (submitEvent) => this.#onEditPointSubmitHandle(submitEvent));
+    this.element.querySelector('.event').addEventListener('submit', (submitEvent) => this.#handleEditPointSubmit(submitEvent));
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', (submitEvent) => this.#handleEditPointSubmit(submitEvent));
   }
 
   // Делаем на основе обработчика новый обработчик
-  #onEditPointSubmitHandle (submitEvent) {
+  #handleEditPointSubmit = (submitEvent) => {
     submitEvent.preventDefault();
     this.#onEditPointSubmit();
-  }
+  };
 
   get template() {
     return createEditPointTemplate(this.#event);
