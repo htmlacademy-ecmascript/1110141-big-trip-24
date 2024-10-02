@@ -73,10 +73,31 @@ const getOfferInfoById = (id, offers, type) => {
 };
 
 /**
- * Проверяет была ли нажата кнопка Escape
+ * Проверяет, была ли нажата кнопка Escape
  * @param {Event} event - событие keydown
  * @returns {boolean} - возвращает true, если была нажата кнопка Escape
  */
 const isEscapeKey = (event) => event.key === 'Escape';
 
-export { humanizeEventDate, formatDate, calculateDateDifference, getCityInfoByID, getOfferInfoById, isEscapeKey };
+/**
+ * Проверяет, является ли событие будующим
+ * @param {Object} event объект события
+ * @returns {boolean} - возвращает true, если дата начала события больше текущей даты
+ */
+const isEventFuture = (event) => dayjs(event.date_from).isAfter(dayjs());
+
+/**
+ * Провеяет, является ли событие текущим
+ * @param {Object} event объект события
+ * @returns {boolean} - возвращает true, если дата начала события меньше или рана текущей дате и дата конца события больше текущей даты
+ */
+const isEventPresent = (event) => dayjs(event.date_from).isBefore(dayjs()) && dayjs(event.date_to).isAfter(dayjs());
+
+/**
+ * Проверяет, является ли событие прошедшим
+ * @param {Object} event объект события
+ * @returns {boolean} - возвращает true, если дата конца события меньше текущей даты
+ */
+const isEventPast = (event) => dayjs(event.date_to).isBefore(dayjs());
+
+export { humanizeEventDate, formatDate, calculateDateDifference, getCityInfoByID, getOfferInfoById, isEscapeKey, isEventFuture, isEventPresent, isEventPast };
