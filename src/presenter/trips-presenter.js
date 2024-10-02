@@ -1,6 +1,7 @@
+// Импорт вьюшек
 import NewListFilterView from '../view/new-list-filter-view';
 import NewListSortView from '../view/new-list-sort-view';
-// import NewAddPointView from '../view/new-add-new-point-view';
+// Это до поры до времени import NewAddPointView from '../view/new-add-new-point-view';
 import NewEditPointView from '../view/new-edit-point-view';
 import NewListView from '../view/new-list-view';
 import NewEventView from '../view/new-event-point-view';
@@ -11,9 +12,14 @@ import newEditFormOffersSectionView from '../view/new-event-offers-section-view'
 import newEditFormEventDestinationSectionView from '../view/new-edit-form-event-destination-section-view';
 import newEditFormEventPhotoContainerView from '../view/new-edit-form-event-photo-container-view';
 import newEditFormEventPhotoView from '../view/new-edit-form-event-photo-view';
+
+// Импорт вспомогательных функций
 import { render, replace } from '../framework/render';
 import { formatDate, getCityInfoByID } from '../utils/event';
 import { isEscapeKey } from '../utils/common';
+import { generateFilter } from '../mock/filter';
+
+// Импорт моков
 import { DESTINATION_POINTS, OFFERS } from '../mock/trip-event-point';
 
 export default class TripsPresenter {
@@ -131,8 +137,10 @@ export default class TripsPresenter {
    * (с другой стороны декомпозируя это всё дальше в один момент упрусь в то, что все эти экземпляры классов нужно куда-то вставлять через querySelector)
    */
   #renderTrips = () => {
+    const filters = generateFilter(this.tripPoints);
     // Отрисовываем фильтры
-    render(new NewListFilterView(), this.body.querySelector('.trip-controls__filters'));
+
+    render(new NewListFilterView({ filters }), this.body.querySelector('.trip-controls__filters'));
 
     // Получаем DOM элемент списка точек маршрута
     this.tripList = this.listElement.element;
