@@ -1,22 +1,6 @@
-import { MIN_PRICE, MAX_PRICE } from './const';
 import dayjs from 'dayjs';
 
 const DATE_FORMAT = 'D MMM';
-
-/**
- * Возвращает случайное целое число в диапазоне от min до max
- * @param {Number} min Целое число нижней границы генерации
- * @param {Number} max Целое число верхней границы генерации
- * @returns Случайное число в диапазоне от min до max
- */
-const getRandomInteger = (min = MIN_PRICE, max = MAX_PRICE) => Math.floor(Math.random() * (max - min + 1)) + min;
-
-/**
- * Получает случайный элемент переданного массива
- * @param {Array} items Массив, случайный элемент которого не обходимо получить
- * @returns {any} Случайный элемент массива
- */
-const getRandomArrayElement = (items) => items[getRandomInteger(0, items.length - 1)];
 
 /**
  * Задаёт человекопонятный формат даты точки события
@@ -40,9 +24,9 @@ const formatDate = (date, format) => dayjs(date).format(format);
  * более суток — дни часы минуты.
  * @param {Date} dateFrom Дата начала события
  * @param {Date} dateTo Дата конца события
- * @returns Разница между двумя датами
+ * @returns {string} Разница между двумя датами
  */
-const calculateDifference = (dateFrom, dateTo) => {
+const calculateDateDifference = (dateFrom, dateTo) => {
   const start = dayjs(dateFrom);
   const end = dayjs(dateTo);
   const diffInMinutes = end.diff(start, 'minute');
@@ -66,11 +50,18 @@ const calculateDifference = (dateFrom, dateTo) => {
 /**
  * Возвращает искомый по переданному ID город из массива переданных же городов
  * @param {Number} id ID искомого города
- * @param {Array} cities Массив объектов городов
- * @returns {Object} Объект искомого города
+ * @param {array} cities Массив объектов городов
+ * @returns {object} Объект искомого города
  */
 const getCityInfoByID = (id, cities) => cities.find((city) => city.id === id);
 
+/**
+ * Возвращает информацию о предложении по его ID и типу
+ * @param {Number} id ID искомого предложения
+ * @param {Array} offers Массив объектов предложений, сгруппированных по типу
+ * @param {String} type Тип предложения (например, "apartment", "house" и т.д.)
+ * @returns {object|null} Объект искомого предложения или null, если предложение не найдено
+ */
 const getOfferInfoById = (id, offers, type) => {
   const offersByType = offers.find((offer) => offer.type.toLowerCase() === type.toLowerCase());
 
@@ -81,13 +72,6 @@ const getOfferInfoById = (id, offers, type) => {
   return null;
 };
 
-const capitalizeFirstLetter = (word) => {
-  if (!word) {
-    return '';
-  }
-  return word.charAt(0).toUpperCase() + word.slice(1);
-};
-
 /**
  * Проверяет была ли нажата кнопка Escape
  * @param {Event} event - событие keydown
@@ -95,4 +79,4 @@ const capitalizeFirstLetter = (word) => {
  */
 const isEscapeKey = (event) => event.key === 'Escape';
 
-export {getRandomArrayElement, getRandomInteger, humanizeEventDate, formatDate, calculateDifference, getCityInfoByID, getOfferInfoById, capitalizeFirstLetter, isEscapeKey };
+export { humanizeEventDate, formatDate, calculateDateDifference, getCityInfoByID, getOfferInfoById, isEscapeKey };
