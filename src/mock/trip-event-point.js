@@ -1,5 +1,5 @@
 import { EVENT_POINTS_TYPES } from '../const';
-import { getRandomArrayElement, getRandomInteger } from '../util';
+import { getRandomArrayElement, getRandomInteger } from '../utils/common';
 
 const DESTINATION_POINTS = [
   {
