@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { humanizeEventDate, formatDate, calculateDifference, getCityInfoByID, getOfferInfoById} from '../util';
+import { humanizeEventDate, getCityInfoByID, getOfferInfoById, formatDate, calculateDateDifference } from '../utils/event';
 import { DESTINATION_POINTS, OFFERS } from '../mock/trip-event-point';
 import NewEventOfferView from './new-event-offer-view';
 
@@ -22,7 +22,7 @@ function createNewEventTemplate (event) {
   // Время "до" элемента time.event__end-time
   const timeTo = formatDate(date_to, 'HH:mm');
   // Длительность события
-  const duration = calculateDifference(date_from, date_to);
+  const duration = calculateDateDifference(date_from, date_to);
   const favoriteClass = is_favorite ? 'event__favorite-btn--active' : '';
 
   // Получаем информацию о пункте назначения

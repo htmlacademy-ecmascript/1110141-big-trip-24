@@ -5,8 +5,15 @@ import NewEditPointView from '../view/new-edit-point-view';
 import NewListView from '../view/new-list-view';
 import NewEventView from '../view/new-event-point-view';
 import NewNoPointView from '../view/no-points-view';
+import newEditFormEventTypeItemView from '../view/new-edit-form-event-type-item-view';
+import newEditFormEventOfferSelectorView from '../view/new-edit-form-event-offer-selector-view';
+import newEditFormOffersSectionView from '../view/new-event-offers-section-view';
+import newEditFormEventDestinationSectionView from '../view/new-edit-form-event-destination-section-view';
+import newEditFormEventPhotoContainerView from '../view/new-edit-form-event-photo-container-view';
+import newEditFormEventPhotoView from '../view/new-edit-form-event-photo-view';
 import { render, replace } from '../framework/render';
-import { formatDate, getCityInfoByID, capitalizeFirstLetter, isEscapeKey} from '../util';
+import { formatDate, getCityInfoByID } from '../utils/event';
+import { isEscapeKey } from '../utils/common';
 import { DESTINATION_POINTS, OFFERS } from '../mock/trip-event-point';
 
 export default class TripsPresenter {
@@ -43,10 +50,8 @@ export default class TripsPresenter {
     const eventTypeItemsList = OFFERS.map((point) => {
       const eventType = point.type.toLowerCase();
       const typeCheckedAttribute = lowercaseType === eventType ? 'checked' : '';
-      return `<div class="event__type-item">
-                <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}" ${typeCheckedAttribute}>
-                <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${capitalizeFirstLetter(eventType)}</label>
-              </div>`;
+      const editFormEventTypeItem = new newEditFormEventTypeItemView({ eventType, typeCheckedAttribute });
+      return editFormEventTypeItem.template;
     }).join('');
 
     // Получаем все офферы того же типа что и событие
@@ -60,34 +65,22 @@ export default class TripsPresenter {
       const offerPrice = offer.price;
       // Проверяем наличие оффера в Set
       const offerCheckedAttribute = checkedOffersSet.has(offer.id) ? 'checked' : '';
-      eventOfferItemsList += `<div class="event__offer-selector">
-                                <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${offerCheckedAttribute}>
-                                <label class="event__offer-label" for="event-offer-luggage-1">
-                                  <span class="event__offer-title">${offerTitle}</span>
-                                  &plus;&euro;&nbsp;
-                                  <span class="event__offer-price">${offerPrice}</span>
-                                </label>
-                              </div>`;
+      const editFormEventOfferSelector = new newEditFormEventOfferSelectorView({ offerCheckedAttribute, offerTitle, offerPrice });
+      eventOfferItemsList += editFormEventOfferSelector.template;
     });
 
     // Фиксируем шаблон секции с офферами
     let offersSection = '';
     if (eventOfferItemsList) {
-      offersSection = `<section class="event__section  event__section--offers">
-                        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-                        <div class="event__available-offers">
-                          ${eventOfferItemsList}
-                        </div>
-                      </section>`;
+      const editOffersSection = new newEditFormOffersSectionView({ eventOfferItemsList });
+      offersSection = editOffersSection.template;
     }
 
     // Фиксируем шаблон секции с описанием пункта на значения
     let descriptionSection = '';
     if (cityInfo.description) {
-      descriptionSection = `<section class="event__section  event__section--destination">
-                              <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                              <p class="event__destination-description">${cityInfo.description}</p>
-                            </section>`;
+      const editFormOffersSection = new newEditFormEventDestinationSectionView({ description: cityInfo.description });
+      descriptionSection = editFormOffersSection.template;
     }
 
     // Фиксируем шаблон блока с изображениями и шаблон самих изображений
@@ -95,13 +88,11 @@ export default class TripsPresenter {
     if (cityInfo.pictures.length) {
       let pictures = '';
       cityInfo.pictures.forEach((picture) => {
-        pictures += `<img class="event__photo" src="${picture.src}" alt="${picture.description} photo"></img>`;
+        const editFormEventPhoto = new newEditFormEventPhotoView({ src: picture.src, description: picture.description })
+        pictures += editFormEventPhoto.template;
       });
-      photosContainer = `<div class="event__photos-container">
-                          <div class="event__photos-tape">
-                            ${pictures}
-                          </div>
-                        </div>`;
+      const editFormEventPhotoContainer = new newEditFormEventPhotoContainerView({ pictures });
+      photosContainer = editFormEventPhotoContainer.template;
     }
 
     // Возвращаем подготовленные для использования данные
@@ -135,7 +126,10 @@ export default class TripsPresenter {
    * Метод отрисовки элементов на странице
    */
 
-  // TODO: Переделать так, чтобы отрисовывать не в this.body.querySelector('.trip-controls__filters') а в, например, this.tripMain.element
+  /**
+   * TODO: Переделать так, чтобы отрисовывать не в this.body.querySelector('.trip-controls__filters') а в, например, this.tripMain.element
+   * (с другой стороны декомпозируя это всё дальше в один момент упрусь в то, что все эти экземпляры классов нужно куда-то вставлять через querySelector)
+   */
   #renderTrips = () => {
     // Отрисовываем фильтры
     render(new NewListFilterView(), this.body.querySelector('.trip-controls__filters'));
