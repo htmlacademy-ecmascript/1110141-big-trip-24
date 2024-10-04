@@ -3,7 +3,6 @@ import AbstractView from '../framework/view/abstract-view';
 function createEditPointTemplate (event) {
 
   const {
-    lowercaseType,
     eventTypeItemsList,
     type,
     cityInfo,
@@ -22,7 +21,7 @@ function createEditPointTemplate (event) {
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-2">
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/${lowercaseType}.png" alt="Event type icon">
+                      <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
                     </label>
                     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-2" type="checkbox">
 

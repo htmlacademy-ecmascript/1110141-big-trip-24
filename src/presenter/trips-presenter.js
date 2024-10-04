@@ -18,6 +18,7 @@ import { render, replace } from '../framework/render';
 import { formatDate, getCityInfoByID } from '../utils/event';
 import { isEscapeKey } from '../utils/common';
 import { generateFilter } from '../mock/filter';
+import { getDatalistOption, getEventTypeData } from '../utils/form';
 
 // Импорт моков
 import { DESTINATION_POINTS, OFFERS } from '../mock/trip-event-point';
@@ -37,32 +38,27 @@ export default class TripsPresenter {
   #prepareDataFormEditPointView (event) {
     const { base_price, date_from, date_to, destination, offers, type } = event;
 
-    const lowercaseType = type.toLowerCase();
-
     // Получаем информацию о пункте назначения
     const cityInfo = getCityInfoByID(destination, DESTINATION_POINTS);
     // Получаем дату-вреся начала события
     const eventDatetimeFrom = formatDate(date_from, 'D/M/YY HH:mm');
     // Получаем дату-время конца события
     const eventDatetimeTo = formatDate(date_to, 'D/M/YY HH:mm');
-
     // Получаем список возможных пунктов назнчачения для datalist
-    let destinationListOptions = '';
-    DESTINATION_POINTS.forEach((point) => {
-      destinationListOptions += `<option value="${ point.name }"></option>`;
-    });
+    const destinationListOptions = getDatalistOption(DESTINATION_POINTS);
 
     // Получаем список типов событий
-    const eventTypeItemsList = OFFERS.map((point) => {
-      const eventType = point.type.toLowerCase();
-      const typeCheckedAttribute = lowercaseType === eventType ? 'checked' : '';
-      const editFormEventTypeItem = new newEditFormEventTypeItemView({ eventType, typeCheckedAttribute });
+    const eventTypeData = getEventTypeData(OFFERS, type);
+    const eventTypeItemsList = eventTypeData.map((pointData) => {
+      const { eventType, isChecked } = pointData;
+      console.log(isChecked);
+      const editFormEventTypeItem = new newEditFormEventTypeItemView({ eventType, isChecked });
       return editFormEventTypeItem.template;
     }).join('');
 
     // Получаем все офферы того же типа что и событие
     let eventOfferItemsList = '';
-    const selectedOffers = OFFERS.find((point) => point.type.toLowerCase() === lowercaseType)?.offers || [];
+    const selectedOffers = OFFERS.find((point) => point.type === type)?.offers || [];
 
     const checkedOffersSet = new Set(offers);
 
@@ -103,7 +99,7 @@ export default class TripsPresenter {
 
     // Возвращаем подготовленные для использования данные
     return {
-      lowercaseType,
+      type,
       base_price,
       eventDatetimeFrom,
       eventDatetimeTo,
@@ -111,7 +107,6 @@ export default class TripsPresenter {
       destinationListOptions,
       eventTypeItemsList,
       offersSection,
-      type,
       descriptionSection,
       photosContainer,
     };

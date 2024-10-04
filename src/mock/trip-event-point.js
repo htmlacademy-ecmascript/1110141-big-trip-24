@@ -72,7 +72,7 @@ const DESTINATION_POINTS = [
 
 const OFFERS = [
   {
-    type: 'Taxi',
+    type: 'taxi',
     offers: [
       {
         id: 1,
@@ -87,7 +87,7 @@ const OFFERS = [
     ]
   },
   {
-    type: 'Bus',
+    type: 'bus',
     offers: [
       {
         id: 1,
@@ -107,7 +107,7 @@ const OFFERS = [
     ]
   },
   {
-    type: 'Train',
+    type: 'train',
     offers: [
       {
         id: 1,
