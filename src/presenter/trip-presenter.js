@@ -13,6 +13,7 @@ import { updateItem } from '../utils/common';
 
 export default class TripsPresenter {
   #listElement = null;
+  #tripList = null;
   #eventPresenters = new Map();
 
   constructor({tripsModel}) {
@@ -47,7 +48,7 @@ export default class TripsPresenter {
     render(new NewListFilterView({ filters }), this.body.querySelector('.trip-controls__filters'));
 
     // Получаем DOM элемент списка точек маршрута
-    this.tripList = this.listElement.element;
+    this.#tripList = this.#listElement.element;
 
     // render(new NewAddPointView(), this.tripList);
 
@@ -60,7 +61,7 @@ export default class TripsPresenter {
       // Отрисовываем сортировку
       render(new NewListSortView(), this.body.querySelector('.trip-events'));
       // Отрисовываем этот список
-      render(this.listElement, this.body.querySelector('.trip-events'));
+      render(this.#listElement, this.body.querySelector('.trip-events'));
       // Отрисовываем точки маршрута в цикле
       for (let i = 0; i < this.events.length; i++) {
         const currentEvent = this.events[i];
@@ -78,12 +79,19 @@ export default class TripsPresenter {
   }
 
   /**
-   * Обработчик изменения точки маршрута
+   * Отрисовывает изменённую точку маршрута
    * @param {event} updatedEvent - Обновленная точка маршрута
    */
   #handleEventChange = (updatedEvent) => {
-    this.#listElement = updateItem(this.#listElement, updatedEvent);
-    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
+    this.#listElement = updateItem(this.events, updatedEvent);
+    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent, this.#tripList);
+  };
+
+  /**
+   * Сбрасывает режим отображения (обычный или редактирование) точек маршрута
+   */
+  #handleModeChange = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
 
   /**
@@ -91,9 +99,13 @@ export default class TripsPresenter {
    * @param {event} event - Точка маршрута
    */
   #renderEvent (event) {
-    const eventPresenter = new EventPresenter({ event });
+    const eventPresenter = new EventPresenter({
+      onDataChange: this.#handleEventChange,
+      tripList: this.#tripList,
+      onModeChange: this.#handleModeChange,
+    });
     this.#eventPresenters.set(event.id, eventPresenter);
-    eventPresenter.init(event, this.tripList);
+    eventPresenter.init(event);
   }
 
 }

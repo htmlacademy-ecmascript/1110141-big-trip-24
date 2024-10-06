@@ -1,6 +1,6 @@
 // Импорт вьюшек
 import NewEditFormView from '../view/new-edit-form-view';
-import NewEventView from '../view/new-event-point-view';
+import NewEventView from '../view/new-event-view';
 import newEditFormEventTypeItemView from '../view/new-edit-form-event-type-item-view';
 import newEditFormEventOfferSelectorView from '../view/new-edit-form-event-offer-selector-view';
 import newEditFormOffersSectionView from '../view/new-event-offers-section-view';
@@ -17,19 +17,35 @@ import { getDatalistOption, getEventTypeData } from '../utils/form';
 // Импорт моков
 import { DESTINATION_POINTS, OFFERS } from '../mock/event';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class EventPresenter {
   #event = null;
+  #tripList = null;
+
   #eventView = null;
   #editFormView = null;
-  #tripList = null;
+
+  #handleDataChange = null;
+  #handleModeChange = null;
+
+  #mode = Mode.DEFAULT;
+
+  constructor({ onDataChange, tripList, onModeChange }) {
+    this.#handleDataChange = onDataChange;
+    this.#tripList = tripList;
+    this.#handleModeChange = onModeChange;
+  }
 
   /**
    * Метод отрисовки точек маршрута с формами редактирования, а также закрепляем логику взаимодействия с элементами.
    * @param {object} event - Объект события.
    */
-  init(event, tripList) {
+  init(event) {
     this.#event = event;
-    this.#tripList = tripList;
 
     const previousEventComponent = this.#eventView;
     const previousEditFormComponent = this.#editFormView;
@@ -37,7 +53,8 @@ export default class EventPresenter {
     // Создаём экземпляры классов точки события и формы редактирования
     this.#eventView = new NewEventView({
       event: this.#event,
-      onEventRollupClick: this.#onEventRollupClick
+      onEventRollupClick: this.#onEventRollupClick,
+      onFavoriteClick: this.#handleFavoriteClick,
     });
     this.#editFormView = new NewEditFormView({
       event: this.#prepareDataForEditForm(this.#event),
@@ -48,10 +65,12 @@ export default class EventPresenter {
       render(this.#eventView, this.#tripList);
       return;
     }
-    if (this.#tripList.contains(previousEventComponent.element)) {
+
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#eventView, previousEventComponent);
     }
-    if (this.#tripList.contains(previousEditFormComponent.element)) {
+
+    if (this.#mode === Mode.EDITING) {
       replace(this.#editFormView, previousEditFormComponent);
     }
 
@@ -64,39 +83,48 @@ export default class EventPresenter {
     remove(this.#editFormView);
   }
 
+  resetView () {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToEvent();
+    }
+  }
+
   // Функция скрывающая форму редактирования при нажатии ESC
   #onEscapeKeyDown = (keydownEvent) => {
     if (isEscapeKey(keydownEvent)) {
       keydownEvent.preventDefault();
-      this.#changeFormOnEvent();
+      this.#replaceFormToEvent();
       document.removeEventListener('keydown', this.#onEscapeKeyDown);
     }
   };
 
   // Смена точки события на форму редактирования события
-  #changeEventOnForm () {
+  #replaceEventToForm () {
     replace(this.#editFormView, this.#eventView);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
   }
 
   // Смена точки формы редактирования события на точку события
-  #changeFormOnEvent () {
+  #replaceFormToEvent () {
     replace(this.#eventView, this.#editFormView);
+    this.#mode = Mode.DEFAULT;
   }
 
   // Обработчик клика по кнопке раскрытия точки маршрута
   #onEventRollupClick = () => {
-    this.#changeEventOnForm();
+    this.#replaceEventToForm();
     document.addEventListener('keydown', this.#onEscapeKeyDown);
   };
 
   // Обработчик клика по кнопке скрытия формы редактирования точки маршрута
-  #onEditFormSubmit = () => {
-    this.#changeFormOnEvent();
+  #onEditFormSubmit = (event) => {
+    this.#replaceFormToEvent(event);
     document.removeEventListener('keydown', this.#onEscapeKeyDown);
   };
 
-  #onFavoriteClick = () => {
-    this.#event.is_favorite = !this.#event.is_favorite;
+  #handleFavoriteClick = () => {
+    this.#handleDataChange({...this.#event, is_favorite: !this.#event.is_favorite});
   };
 
   /**
@@ -178,7 +206,7 @@ export default class EventPresenter {
       descriptionSection,
       photosContainer,
     };
-  }
+  };
 }
 
 export { EventPresenter };

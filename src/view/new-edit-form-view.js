@@ -93,7 +93,7 @@ export default class NewEditFormView extends AbstractView {
   // Делаем на основе обработчика новый обработчик
   #handleEditFormSubmit = (submitEvent) => {
     submitEvent.preventDefault();
-    this.#onEditFormSubmit();
+    this.#onEditFormSubmit(this.#event);
   };
 
   get template() {

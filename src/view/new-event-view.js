@@ -79,14 +79,19 @@ function createNewEventTemplate (event) {
 }
 export default class NewEventView extends AbstractView {
   #event = null;
-  #onEventRollupClick = null;
+  #handleEventRollupClick = null;
+  #handleFavoriteClick = null;
 
-  constructor ({event, onEventRollupClick}) {
+  constructor ({event, onEventRollupClick, onFavoriteClick}) {
     super();
     this.#event = event;
     // Получаем обработчик клика кнопки-стрелки снаружи
-    this.#onEventRollupClick = onEventRollupClick;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', (clickEvent) => this.#handleEventRollupClick(clickEvent));
+    this.#handleEventRollupClick = onEventRollupClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', (clickEvent) => this.#eventRollupClickHandler(clickEvent));
+
+    // Получаем обработчик клика кнопки-звездочки снаружи
+    this.#handleFavoriteClick = onFavoriteClick;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', (clickEvent) => this.#favoriteClickHandler(clickEvent));
   }
 
   get template() {
@@ -94,8 +99,13 @@ export default class NewEventView extends AbstractView {
   }
 
   // Делаем на основе обработчика новый обработчик
-  #handleEventRollupClick = (clickEvent) => {
+  #eventRollupClickHandler = (clickEvent) => {
     clickEvent.preventDefault();
-    this.#onEventRollupClick();
+    this.#handleEventRollupClick();
+  };
+
+  #favoriteClickHandler = (clickEvent) => {
+    clickEvent.preventDefault();
+    this.#handleFavoriteClick();
   };
 }
