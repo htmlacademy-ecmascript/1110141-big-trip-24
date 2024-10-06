@@ -9,12 +9,4 @@ const FilterType = {
   PAST: 'past',
 };
 
-const SortType = {
-  DAY: 'day',
-  EVENT: 'event',
-  TIME: 'time',
-  PRICE: 'price',
-  OFFERS: 'offers',
-};
-
-export {EVENT_POINTS_TYPES, MAX_PRICE, MIN_PRICE, FilterType, SortType};
+export {EVENT_POINTS_TYPES, MAX_PRICE, MIN_PRICE, FilterType};
