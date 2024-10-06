@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 
-function createEditPointTemplate (event) {
+function createEditFormTemplate (event) {
 
   const {
     eventTypeItemsList,
@@ -76,27 +76,27 @@ function createEditPointTemplate (event) {
             </li>`;
 }
 
-export default class NewEditPointView extends AbstractView {
+export default class NewEditFormView extends AbstractView {
 
   #event = null;
-  #onEditPointSubmit = null;
+  #onEditFormSubmit = null;
 
-  constructor ({event, onEditPointSubmit}) {
+  constructor ({event, onEditFormSubmit}) {
     super();
     this.#event = event;
     // Получаем обработчик сабмита формы снаружи
-    this.#onEditPointSubmit = onEditPointSubmit;
-    this.element.querySelector('.event').addEventListener('submit', (submitEvent) => this.#handleEditPointSubmit(submitEvent));
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', (submitEvent) => this.#handleEditPointSubmit(submitEvent));
+    this.#onEditFormSubmit = onEditFormSubmit;
+    this.element.querySelector('.event').addEventListener('submit', (submitEvent) => this.#handleEditFormSubmit(submitEvent));
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', (submitEvent) => this.#handleEditFormSubmit(submitEvent));
   }
 
   // Делаем на основе обработчика новый обработчик
-  #handleEditPointSubmit = (submitEvent) => {
+  #handleEditFormSubmit = (submitEvent) => {
     submitEvent.preventDefault();
-    this.#onEditPointSubmit();
+    this.#onEditFormSubmit();
   };
 
   get template() {
-    return createEditPointTemplate(this.#event);
+    return createEditFormTemplate(this.#event);
   }
 }

@@ -16,7 +16,6 @@ export default class newEditFormEventTypeItemView extends AbstractView {
     super();
     this.#eventType = eventType;
     this.#typeCheckedAttribute = typeCheckedAttribute;
-    console.log(this.#typeCheckedAttribute, typeCheckedAttribute);
   }
 
   get template () {
