@@ -15,6 +15,7 @@ export default class TripsPresenter {
   #listElement = null;
   #tripList = null;
   #eventPresenters = new Map();
+  #sortComponent = null;
 
   constructor({tripsModel}) {
     this.body = document.body;
@@ -59,7 +60,7 @@ export default class TripsPresenter {
       render(new NewNoPointView(), this.body.querySelector('.trip-events'));
     } else {
       // Отрисовываем сортировку
-      render(new NewListSortView(), this.body.querySelector('.trip-events'));
+      render(this.#sortComponent, this.body.querySelector('.trip-events'));
       // Отрисовываем этот список
       render(this.#listElement, this.body.querySelector('.trip-events'));
       // Отрисовываем точки маршрута в цикле
@@ -69,6 +70,28 @@ export default class TripsPresenter {
       }
     }
   }
+
+  /**
+ * Создаёт экземпляр презентера точки маршрута и отрисовывает её через метод init()
+ * @param {event} event - Точка маршрута
+ */
+  #renderEvent (event) {
+    const eventPresenter = new EventPresenter({
+      onDataChange: this.#handleEventChange,
+      tripList: this.#tripList,
+      onModeChange: this.#handleModeChange,
+    });
+    this.#eventPresenters.set(event.id, eventPresenter);
+    eventPresenter.init(event);
+  }
+
+  #renderSort () {
+    this.#sortComponent = new NewListSortView({
+      onSortTypeChange: this.#handleSortTypeChange,
+    });
+  }
+
+  #handleSortTypeChange = (sortType) => {};
 
   /**
    * Удаляет все точки маршрута
@@ -93,19 +116,4 @@ export default class TripsPresenter {
   #handleModeChange = () => {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
-
-  /**
-   * Создаёт экземпляр презентера точки маршрута и отрисовывает её через метод init()
-   * @param {event} event - Точка маршрута
-   */
-  #renderEvent (event) {
-    const eventPresenter = new EventPresenter({
-      onDataChange: this.#handleEventChange,
-      tripList: this.#tripList,
-      onModeChange: this.#handleModeChange,
-    });
-    this.#eventPresenters.set(event.id, eventPresenter);
-    eventPresenter.init(event);
-  }
-
 }
