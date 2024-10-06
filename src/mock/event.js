@@ -1,5 +1,6 @@
 import { EVENT_POINTS_TYPES } from '../const';
 import { getRandomArrayElement, getRandomInteger } from '../utils/common';
+import { nanoid } from 'nanoid';
 
 const DESTINATION_POINTS = [
   {
@@ -171,6 +172,9 @@ const mockEvents = [
   },
 ];
 
-const getRandomEvent = () => getRandomArrayElement(mockEvents);
+const getRandomEvent = () => ({
+  id: nanoid(),
+  ...getRandomArrayElement(mockEvents),
+});
 
 export { getRandomEvent, DESTINATION_POINTS, OFFERS };

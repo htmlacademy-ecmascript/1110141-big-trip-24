@@ -15,7 +15,7 @@ import { formatDate, getCityInfoByID } from '../utils/event';
 import { getDatalistOption, getEventTypeData } from '../utils/form';
 
 // Импорт моков
-import { DESTINATION_POINTS, OFFERS } from '../mock/trip-event-point';
+import { DESTINATION_POINTS, OFFERS } from '../mock/event';
 
 export default class EventPresenter {
   #event = null;

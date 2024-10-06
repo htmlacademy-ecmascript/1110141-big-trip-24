@@ -12,6 +12,8 @@ import { EventPresenter } from './event-presenter';
 
 export default class TripsPresenter {
   listElement = new NewListView();
+  #eventPresenters = new Map();
+
   constructor({tripsModel}) {
     this.body = document.body;
     this.tripsModel = tripsModel;
@@ -65,8 +67,14 @@ export default class TripsPresenter {
     }
   }
 
+  #clearEventsList () {
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+  }
+
   #renderEvent (event) {
     const eventPresenter = new EventPresenter({ event });
+    this.#eventPresenters.set(event.id, eventPresenter);
     eventPresenter.init(event, this.tripList);
   }
 

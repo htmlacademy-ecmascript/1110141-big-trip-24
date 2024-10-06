@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 import { humanizeEventDate, getCityInfoByID, getOfferInfoById, formatDate, calculateDateDifference } from '../utils/event';
-import { DESTINATION_POINTS, OFFERS } from '../mock/trip-event-point';
+import { DESTINATION_POINTS, OFFERS } from '../mock/event';
 import NewEventOfferView from './new-event-offer-view';
 
 function createNewEventTemplate (event) {
