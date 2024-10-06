@@ -9,14 +9,16 @@ import NewNoPointView from '../view/no-points-view';
 import { render } from '../framework/render';
 import { generateFilter } from '../mock/filter';
 import { EventPresenter } from './event-presenter';
+import { updateItem } from '../utils/common';
 
 export default class TripsPresenter {
-  listElement = new NewListView();
+  #listElement = null;
   #eventPresenters = new Map();
 
   constructor({tripsModel}) {
     this.body = document.body;
     this.tripsModel = tripsModel;
+    this.#listElement = new NewListView();
   }
 
   /**
@@ -67,11 +69,27 @@ export default class TripsPresenter {
     }
   }
 
+  /**
+   * Удаляет все точки маршрута
+   */
   #clearEventsList () {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
   }
 
+  /**
+   * Обработчик изменения точки маршрута
+   * @param {event} updatedEvent - Обновленная точка маршрута
+   */
+  #handleEventChange = (updatedEvent) => {
+    this.#listElement = updateItem(this.#listElement, updatedEvent);
+    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
+  };
+
+  /**
+   * Создаёт экземпляр презентера точки маршрута и отрисовывает её через метод init()
+   * @param {event} event - Точка маршрута
+   */
   #renderEvent (event) {
     const eventPresenter = new EventPresenter({ event });
     this.#eventPresenters.set(event.id, eventPresenter);

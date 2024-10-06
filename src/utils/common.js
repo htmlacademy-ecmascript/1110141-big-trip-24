@@ -17,8 +17,8 @@ const getRandomArrayElement = (items) => items[getRandomInteger(0, items.length 
 
 /**
  * Делает первую букву переданной строки заглавной
- * @param {String} word Строка, первую букву которой нужно сделать заглавной
- * @returns {String} Строка с заглавной первой буквой или пустая строка, если на вход передана пустая строка или null/undefined
+ * @param {string} word Строка, первую букву которой нужно сделать заглавной
+ * @returns {string} Строка с заглавной первой буквой или пустая строка, если на вход передана пустая строка или null/undefined
  */
 const capitalizeFirstLetter = (word) => {
   if (!word) {
@@ -34,4 +34,14 @@ const capitalizeFirstLetter = (word) => {
  */
 const isEscapeKey = (event) => event.key === 'Escape';
 
-export { getRandomInteger, getRandomArrayElement, capitalizeFirstLetter, isEscapeKey };
+/**
+ * "Обновляет" массив точек маршрута
+ * @param {Array} items Массив точек маршрута
+ * @param {event} update Обновлённая точка маршута
+ * @returns {Array} Обновлённый массив точек маршрута
+ */
+function updateItem(items, update) {
+  return items.map((item) => item.id === update.id ? update : item);
+}
+
+export { getRandomInteger, getRandomArrayElement, capitalizeFirstLetter, isEscapeKey, updateItem };
