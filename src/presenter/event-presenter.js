@@ -9,7 +9,7 @@ import newEditFormEventPhotoContainerView from '../view/new-edit-form-event-phot
 import newEditFormEventPhotoView from '../view/new-edit-form-event-photo-view';
 
 // Импорт вспомогательных функций
-import { replace, render } from '../framework/render';
+import { replace, render, remove } from '../framework/render';
 import { isEscapeKey } from '../utils/common';
 import { formatDate, getCityInfoByID } from '../utils/event';
 import { getDatalistOption, getEventTypeData } from '../utils/form';
@@ -31,6 +31,9 @@ export default class EventPresenter {
     this.#event = event;
     this.#tripList = tripList;
 
+    const previousEventComponent = this.#eventView;
+    const previousEditFormComponent = this.#editFormView;
+
     // Создаём экземпляры классов точки события и формы редактирования
     this.#eventView = new NewEventView({
       event: this.#event,
@@ -41,7 +44,24 @@ export default class EventPresenter {
       onEditFormSubmit: this.#onEditFormSubmit
     });
 
-    render(this.#eventView, this.#tripList);
+    if (previousEditFormComponent === null || previousEventComponent === null) {
+      render(this.#eventView, this.#tripList);
+      return;
+    }
+    if (this.#tripList.contains(previousEventComponent.element)) {
+      replace(this.#eventView, previousEventComponent);
+    }
+    if (this.#tripList.contains(previousEditFormComponent.element)) {
+      replace(this.#editFormView, previousEditFormComponent);
+    }
+
+    remove(previousEventComponent);
+    remove(previousEditFormComponent);
+  }
+
+  destroy () {
+    remove(this.#eventView);
+    remove(this.#editFormView);
   }
 
   // Функция скрывающая форму редактирования при нажатии ESC
