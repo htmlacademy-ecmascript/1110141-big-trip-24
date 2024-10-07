@@ -100,4 +100,28 @@ const isEventPresent = (event) => dayjs(event.date_from).isBefore(dayjs()) && da
  */
 const isEventPast = (event) => dayjs(event.date_to).isBefore(dayjs());
 
-export { humanizeEventDate, formatDate, calculateDateDifference, getCityInfoByID, getOfferInfoById, isEscapeKey, isEventFuture, isEventPresent, isEventPast };
+const sortByPrice = (eventFirst, eventSecond) => {
+  if (eventFirst.base_price < eventSecond.base_price) {
+    return -1;
+  }
+  if (eventFirst.base_price > eventSecond.base_price) {
+    return 1;
+  }
+  return 0;
+};
+
+const sortByTime = (eventFirst, eventSecond) => {
+  const durationFirst = dayjs(eventFirst.date_to).diff(dayjs(eventFirst.date_from));
+  const durationSecond = dayjs(eventSecond.date_to).diff(dayjs(eventSecond.date_from));
+
+  if (durationFirst < durationSecond) {
+    return -1;
+  }
+  if (durationFirst > durationSecond) {
+    return 1;
+  }
+  return 0;
+};
+
+
+export { humanizeEventDate, formatDate, calculateDateDifference, getCityInfoByID, getOfferInfoById, isEscapeKey, isEventFuture, isEventPresent, isEventPast, sortByPrice, sortByTime };

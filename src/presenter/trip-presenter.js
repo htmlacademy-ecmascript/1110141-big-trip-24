@@ -10,12 +10,20 @@ import { render } from '../framework/render';
 import { generateFilter } from '../mock/filter';
 import { EventPresenter } from './event-presenter';
 import { updateItem } from '../utils/common';
+import { SortType } from '../const';
+import { sortByPrice, sortByTime } from '../utils/event';
 
 export default class TripsPresenter {
   #listElement = null;
   #tripList = null;
+
   #eventPresenters = new Map();
+  #events = [];
+  #sourcedEvents = [];
+
   #sortComponent = null;
+
+  #currentSortType = SortType.DEFAULT;
 
   constructor({tripsModel}) {
     this.body = document.body;
@@ -28,7 +36,8 @@ export default class TripsPresenter {
    */
   init() {
     // Получаем данные из модели
-    this.events = [...this.tripsModel.getEvents()];
+    this.#events = [...this.tripsModel.getEvents()];
+    this.#sourcedEvents = [...this.tripsModel.getEvents()];
 
     // Вызываем метод отрисовывающий необходимые элементы
     this.#renderTrips();
@@ -43,7 +52,7 @@ export default class TripsPresenter {
    * (с другой стороны декомпозируя это всё дальше в один момент упрусь в то, что все эти экземпляры классов нужно куда-то вставлять через querySelector)
    */
   #renderTrips () {
-    const filters = generateFilter(this.events);
+    const filters = generateFilter(this.#events);
     // Отрисовываем фильтры
 
     render(new NewListFilterView({ filters }), this.body.querySelector('.trip-controls__filters'));
@@ -55,17 +64,18 @@ export default class TripsPresenter {
 
     // Проверяем, есть ли точки маршрута для отображения
     // TODO: Пока так, потом надо будет переделать фразы под каждый фильтр
-    if (this.events.length === 0) {
+    if (this.#events.length === 0) {
       // Если точек маршрута нет — выводим сообщение
       render(new NewNoPointView(), this.body.querySelector('.trip-events'));
     } else {
+      this.#renderSort();
       // Отрисовываем сортировку
       render(this.#sortComponent, this.body.querySelector('.trip-events'));
       // Отрисовываем этот список
       render(this.#listElement, this.body.querySelector('.trip-events'));
       // Отрисовываем точки маршрута в цикле
-      for (let i = 0; i < this.events.length; i++) {
-        const currentEvent = this.events[i];
+      for (let i = 0; i < this.#events.length; i++) {
+        const currentEvent = this.#events[i];
         this.#renderEvent(currentEvent);
       }
     }
@@ -91,7 +101,28 @@ export default class TripsPresenter {
     });
   }
 
-  #handleSortTypeChange = (sortType) => {};
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType && sortType !== undefined) {
+      return;
+    }
+
+    this.#sortEvents(sortType);
+  };
+
+  #sortEvents (sortType) {
+    switch (sortType) {
+      case SortType.PRICE:
+        this.#events.sort(sortByPrice);
+        break;
+      case SortType.TIME:
+        this.#events.sort(sortByTime);
+        break;
+      case SortType.DAY:
+        this.#events = [...this.#sourcedEvents];
+        break;
+    }
+    this.#currentSortType = sortType;
+  }
 
   /**
    * Удаляет все точки маршрута
@@ -106,7 +137,8 @@ export default class TripsPresenter {
    * @param {event} updatedEvent - Обновленная точка маршрута
    */
   #handleEventChange = (updatedEvent) => {
-    this.#listElement = updateItem(this.events, updatedEvent);
+    this.#listElement = updateItem(this.#events, updatedEvent);
+    this.#sourcedEvents = updateItem(this.#sourcedEvents, updatedEvent);
     this.#eventPresenters.get(updatedEvent.id).init(updatedEvent, this.#tripList);
   };
 

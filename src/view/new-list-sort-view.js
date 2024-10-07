@@ -5,12 +5,12 @@ function createNewListSortTemplate () {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
             <div class="trip-sort__item  trip-sort__item--day">
               <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day">
-              <label class="trip-sort__btn" for="sort-day" data-sort-type="${SortType.DAY}">Day</label>
+              <label class="trip-sort__btn" for="sort-day" data-sort-type="${SortType.DEFAULT}">Day</label>
             </div>
 
             <div class="trip-sort__item  trip-sort__item--event">
               <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event" disabled>
-              <label class="trip-sort__btn" for="sort-event" data-sort-type="${SortType.EVENT}">Event</label>
+              <label class="trip-sort__btn" for="sort-event">Event</label>
             </div>
 
             <div class="trip-sort__item  trip-sort__item--time">
@@ -25,7 +25,7 @@ function createNewListSortTemplate () {
 
             <div class="trip-sort__item  trip-sort__item--offer">
               <input id="sort-offer" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-offer" disabled>
-              <label class="trip-sort__btn" for="sort-offer" data-sort-type="${SortType.OFFERS}">Offers</label>
+              <label class="trip-sort__btn" for="sort-offer">Offers</label>
             </div>
           </form>`;
 }

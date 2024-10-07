@@ -10,11 +10,9 @@ const FilterType = {
 };
 
 const SortType = {
-  DAY: 'day',
-  EVENT: 'event',
+  DEFAULT: 'day',
   TIME: 'time',
   PRICE: 'price',
-  OFFERS: 'offers',
 };
 
 export {EVENT_POINTS_TYPES, MAX_PRICE, MIN_PRICE, FilterType, SortType};
