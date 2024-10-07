@@ -11,7 +11,7 @@ import { generateFilter } from '../mock/filter';
 import { EventPresenter } from './event-presenter';
 import { updateItem } from '../utils/common';
 import { SortType } from '../const';
-import { sortByPrice, sortByTime } from '../utils/event';
+import { sortByPrice, sortByTime, sortByDay } from '../utils/event';
 
 export default class TripsPresenter {
   #listElement = null;
@@ -37,7 +37,12 @@ export default class TripsPresenter {
   init() {
     // Получаем данные из модели
     this.#events = [...this.tripsModel.getEvents()];
+    // Сразу сортируем точки маршрута по дате, т.к. это сортировка по-умолчанию
+    this.#events.sort(sortByDay);
+    // Массив для сброса точек маршрута на состояние "по-умолчанию"
     this.#sourcedEvents = [...this.tripsModel.getEvents()];
+    // Сразу сортируем точки маршрута по дате, т.к. это сортировка по-умолчанию
+    this.#sourcedEvents.sort(sortByDay);
 
     // Вызываем метод отрисовывающий необходимые элементы
     this.#renderTrips();
@@ -74,17 +79,14 @@ export default class TripsPresenter {
       // Отрисовываем этот список
       render(this.#listElement, this.body.querySelector('.trip-events'));
       // Отрисовываем точки маршрута в цикле
-      for (let i = 0; i < this.#events.length; i++) {
-        const currentEvent = this.#events[i];
-        this.#renderEvent(currentEvent);
-      }
+      this.#renderEventsList();
     }
   }
 
   /**
- * Создаёт экземпляр презентера точки маршрута и отрисовывает её через метод init()
- * @param {event} event - Точка маршрута
- */
+   * Создаёт экземпляр презентера точки маршрута и отрисовывает её через метод init()
+   * @param {event} event - Точка маршрута
+   */
   #renderEvent (event) {
     const eventPresenter = new EventPresenter({
       onDataChange: this.#handleEventChange,
@@ -95,18 +97,34 @@ export default class TripsPresenter {
     eventPresenter.init(event);
   }
 
+  #renderEventsList() {
+    for (let i = 0; i < this.#events.length; i++) {
+      const currentEvent = this.#events[i];
+      this.#renderEvent(currentEvent);
+    }
+  }
+
+  /**
+   * Создаёт экземпляр сортировки
+   */
   #renderSort () {
     this.#sortComponent = new NewListSortView({
       onSortTypeChange: this.#handleSortTypeChange,
     });
   }
 
+  /**
+   * Сортирует точки маршрута по переданному типу сортировки
+   * @param {string} sortType - тип по которому будем сортировать
+   */
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType && sortType !== undefined) {
       return;
     }
 
     this.#sortEvents(sortType);
+    this.#clearEventsList();
+    this.#renderEventsList();
   };
 
   #sortEvents (sortType) {
@@ -117,7 +135,7 @@ export default class TripsPresenter {
       case SortType.TIME:
         this.#events.sort(sortByTime);
         break;
-      case SortType.DAY:
+      case SortType.DEFAULT:
         this.#events = [...this.#sourcedEvents];
         break;
     }

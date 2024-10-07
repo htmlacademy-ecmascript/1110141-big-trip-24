@@ -123,5 +123,15 @@ const sortByTime = (eventFirst, eventSecond) => {
   return 0;
 };
 
+const sortByDay = (eventFirst, eventSecond) => {
+  if (dayjs(eventFirst.date_from) < dayjs(eventSecond.date_from)) {
+    return 1;
+  }
+  if (dayjs(eventFirst.date_from) > dayjs(eventSecond.date_from)) {
+    return -1;
+  }
+  return 0;
+};
 
-export { humanizeEventDate, formatDate, calculateDateDifference, getCityInfoByID, getOfferInfoById, isEscapeKey, isEventFuture, isEventPresent, isEventPast, sortByPrice, sortByTime };
+
+export { humanizeEventDate, formatDate, calculateDateDifference, getCityInfoByID, getOfferInfoById, isEscapeKey, isEventFuture, isEventPresent, isEventPast, sortByPrice, sortByTime, sortByDay };
