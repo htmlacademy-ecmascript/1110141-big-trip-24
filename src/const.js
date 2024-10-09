@@ -9,4 +9,10 @@ const FilterType = {
   PAST: 'past',
 };
 
-export {EVENT_POINTS_TYPES, MAX_PRICE, MIN_PRICE, FilterType};
+const SortType = {
+  DEFAULT: 'day',
+  TIME: 'time',
+  PRICE: 'price',
+};
+
+export {EVENT_POINTS_TYPES, MAX_PRICE, MIN_PRICE, FilterType, SortType};
