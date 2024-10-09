@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
-import { humanizeEventDate, formatDate, calculateDifference, getCityInfoByID, getOfferInfoById} from '../util';
-import { DESTINATION_POINTS, OFFERS } from '../mock/trip-event-point';
+import { humanizeEventDate, getCityInfoByID, getOfferInfoById, formatDate, calculateDateDifference } from '../utils/event';
+import { DESTINATION_POINTS, OFFERS } from '../mock/event';
 import NewEventOfferView from './new-event-offer-view';
 
 function createNewEventTemplate (event) {
@@ -22,7 +22,7 @@ function createNewEventTemplate (event) {
   // Время "до" элемента time.event__end-time
   const timeTo = formatDate(date_to, 'HH:mm');
   // Длительность события
-  const duration = calculateDifference(date_from, date_to);
+  const duration = calculateDateDifference(date_from, date_to);
   const favoriteClass = is_favorite ? 'event__favorite-btn--active' : '';
 
   // Получаем информацию о пункте назначения
@@ -79,14 +79,19 @@ function createNewEventTemplate (event) {
 }
 export default class NewEventView extends AbstractView {
   #event = null;
-  #onEventRollupClick = null;
+  #handleEventRollupClick = null;
+  #handleFavoriteClick = null;
 
-  constructor ({event, onEventRollupClick}) {
+  constructor ({event, onEventRollupClick, onFavoriteClick}) {
     super();
     this.#event = event;
     // Получаем обработчик клика кнопки-стрелки снаружи
-    this.#onEventRollupClick = onEventRollupClick;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', (clickEvent) => this.#onEventRollupClickHandle(clickEvent));
+    this.#handleEventRollupClick = onEventRollupClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', (clickEvent) => this.#eventRollupClickHandler(clickEvent));
+
+    // Получаем обработчик клика кнопки-звездочки снаружи
+    this.#handleFavoriteClick = onFavoriteClick;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', (clickEvent) => this.#favoriteClickHandler(clickEvent));
   }
 
   get template() {
@@ -94,8 +99,13 @@ export default class NewEventView extends AbstractView {
   }
 
   // Делаем на основе обработчика новый обработчик
-  #onEventRollupClickHandle (clickEvent) {
+  #eventRollupClickHandler = (clickEvent) => {
     clickEvent.preventDefault();
-    this.#onEventRollupClick();
-  }
+    this.#handleEventRollupClick();
+  };
+
+  #favoriteClickHandler = (clickEvent) => {
+    clickEvent.preventDefault();
+    this.#handleFavoriteClick();
+  };
 }

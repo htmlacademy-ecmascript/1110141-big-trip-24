@@ -1,5 +1,6 @@
 import { EVENT_POINTS_TYPES } from '../const';
-import { getRandomArrayElement, getRandomInteger } from '../util';
+import { getRandomArrayElement, getRandomInteger } from '../utils/common';
+import { nanoid } from 'nanoid';
 
 const DESTINATION_POINTS = [
   {
@@ -72,7 +73,7 @@ const DESTINATION_POINTS = [
 
 const OFFERS = [
   {
-    type: 'Taxi',
+    type: 'taxi',
     offers: [
       {
         id: 1,
@@ -87,7 +88,7 @@ const OFFERS = [
     ]
   },
   {
-    type: 'Bus',
+    type: 'bus',
     offers: [
       {
         id: 1,
@@ -107,7 +108,7 @@ const OFFERS = [
     ]
   },
   {
-    type: 'Train',
+    type: 'train',
     offers: [
       {
         id: 1,
@@ -123,8 +124,8 @@ const mockEvents = [
     id: 1,
     type: getRandomArrayElement(EVENT_POINTS_TYPES),
     destination: getRandomArrayElement(DESTINATION_POINTS).id,
-    'date_from': new Date('2019-08-17 09:00'),
-    'date_to': new Date('2019-08-17 18:00'),
+    'date_from': new Date('2024-12-17 09:00'),
+    'date_to': new Date('2025-08-17 18:00'),
     'base_price': getRandomInteger(),
     'is_favorite': false,
     offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
@@ -133,8 +134,8 @@ const mockEvents = [
     id: 2,
     type: getRandomArrayElement(EVENT_POINTS_TYPES),
     destination: getRandomArrayElement(DESTINATION_POINTS).id,
-    'date_from': new Date('2019-06-05 09:45'),
-    'date_to': new Date('2020-01-13 21:30'),
+    'date_from': new Date('2024-10-02 09:45'),
+    'date_to': new Date('2024-10-02 21:30'),
     'base_price': getRandomInteger(),
     'is_favorite': false,
     offers: [ getRandomArrayElement(getRandomArrayElement(OFFERS).offers).id ],
@@ -171,6 +172,9 @@ const mockEvents = [
   },
 ];
 
-const getRandomEvent = () => getRandomArrayElement(mockEvents);
+const getRandomEvent = () => ({
+  id: nanoid(),
+  ...getRandomArrayElement(mockEvents),
+});
 
 export { getRandomEvent, DESTINATION_POINTS, OFFERS };

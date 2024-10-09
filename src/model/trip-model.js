@@ -1,4 +1,4 @@
-import { getRandomEvent } from '../mock/trip-event-point';
+import { getRandomEvent } from '../mock/event';
 
 const TRIP_EVENT_POINTS_COUNT = 3;
 
