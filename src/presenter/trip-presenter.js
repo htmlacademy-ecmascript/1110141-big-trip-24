@@ -98,10 +98,7 @@ export default class TripsPresenter {
   }
 
   #renderEventsList() {
-    for (let i = 0; i < this.#events.length; i++) {
-      const currentEvent = this.#events[i];
-      this.#renderEvent(currentEvent);
-    }
+    this.#events.forEach((event) => this.#renderEvent(event));
   }
 
   /**

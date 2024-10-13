@@ -135,72 +135,24 @@ export default class EventPresenter {
   };
 
   /**
-   * Подготавливает данные для формы редактирования точки маршрута.
+   * Подготавливает данные для формы редактирования события.
    * @param {object} event - Объект события.
    * @returns {object} - Объект с подготовленными данными.
    */
-  #prepareDataForEditForm = (event) => {
+  #prepareDataForEditForm(event) {
     const { base_price, date_from, date_to, destination, offers, type } = event;
 
-    // Получаем информацию о пункте назначения
-    const cityInfo = getCityInfoByID(destination, DESTINATION_POINTS);
-    // Получаем дату-вреся начала события
-    const eventDatetimeFrom = formatDate(date_from, 'D/M/YY HH:mm');
-    // Получаем дату-время конца события
-    const eventDatetimeTo = formatDate(date_to, 'D/M/YY HH:mm');
-    // Получаем список возможных пунктов назнчачения для datalist
-    const destinationListOptions = getDatalistOption(DESTINATION_POINTS);
+    const cityInfo = getCityInfo(destination);
+    const eventDatetimeFrom = formatEventDateTime(date_from);
+    const eventDatetimeTo = formatEventDateTime(date_to);
+    const destinationListOptions = getDestinationListOptions();
 
-    // Получаем список типов событий
-    const eventTypeData = getEventTypeData(OFFERS, type);
-    const eventTypeItemsList = eventTypeData.map((pointData) => {
-      const { eventType, isChecked } = pointData;
-      const editFormEventTypeItem = new newEditFormEventTypeItemView({ eventType, isChecked });
-      return editFormEventTypeItem.template;
-    }).join('');
+    const eventTypeItemsList = getEventTypeItemsList(type);
+    const eventOfferItemsList = getEventOfferItemsList(type, offers);
+    const offersSection = createOffersSection(eventOfferItemsList);
+    const descriptionSection = createDescriptionSection(cityInfo);
+    const photosContainer = createPhotosContainer(cityInfo);
 
-    // Получаем все офферы того же типа что и событие
-    let eventOfferItemsList = '';
-    const selectedOffers = OFFERS.find((point) => point.type === type)?.offers || [];
-
-    const checkedOffersSet = new Set(offers);
-
-    selectedOffers.forEach((offer) => {
-      const offerTitle = offer.title;
-      const offerPrice = offer.price;
-      // Проверяем наличие оффера в Set
-      const offerCheckedAttribute = checkedOffersSet.has(offer.id) ? 'checked' : '';
-      const editFormEventOfferSelector = new newEditFormEventOfferSelectorView({ offerCheckedAttribute, offerTitle, offerPrice });
-      eventOfferItemsList += editFormEventOfferSelector.template;
-    });
-
-    // Фиксируем шаблон секции с офферами
-    let offersSection = '';
-    if (eventOfferItemsList) {
-      const editOffersSection = new newEditFormOffersSectionView({ eventOfferItemsList });
-      offersSection = editOffersSection.template;
-    }
-
-    // Фиксируем шаблон секции с описанием пункта на значения
-    let descriptionSection = '';
-    if (cityInfo.description) {
-      const editFormOffersSection = new newEditFormEventDestinationSectionView({ description: cityInfo.description });
-      descriptionSection = editFormOffersSection.template;
-    }
-
-    // Фиксируем шаблон блока с изображениями и шаблон самих изображений
-    let photosContainer = '';
-    if (cityInfo.pictures.length) {
-      let pictures = '';
-      cityInfo.pictures.forEach((picture) => {
-        const editFormEventPhoto = new newEditFormEventPhotoView({ src: picture.src, description: picture.description })
-        pictures += editFormEventPhoto.template;
-      });
-      const editFormEventPhotoContainer = new newEditFormEventPhotoContainerView({ pictures });
-      photosContainer = editFormEventPhotoContainer.template;
-    }
-
-    // Возвращаем подготовленные для использования данные
     return {
       type,
       base_price,
@@ -213,7 +165,100 @@ export default class EventPresenter {
       descriptionSection,
       photosContainer,
     };
-  };
+
+
+    /**
+     * Получает информацию о городе по идентификатору назначения.
+     * @param {string} destinationID - Идентификатор города.
+     * @returns {object} - Информация о городе.
+     */
+    function getCityInfo(destinationID) {
+      return getCityInfoByID(destinationID, DESTINATION_POINTS);
+    }
+
+    /**
+     * Форматирует дату события.
+     * @param {string} date - Дата события в формате ISO.
+     * @returns {string} - Отформатированная дата.
+     */
+    function formatEventDateTime(date) {
+      return formatDate(date, 'D/M/YY HH:mm');
+    }
+
+    /**
+     * Получает список опций для выбора места назначения.
+     * @returns {string} - HTML-строка с опциями для списка выбора.
+     */
+    function getDestinationListOptions() {
+      return getDatalistOption(DESTINATION_POINTS);
+    }
+
+    /**
+     * Получает список элементов для выбора типа события.
+     * @param {string} selectedType - Выбранный тип события.
+     * @returns {string} - HTML-строка с элементами выбора типа события.
+     */
+    function getEventTypeItemsList(selectedType) {
+      const eventTypeData = getEventTypeData(OFFERS, selectedType);
+      return eventTypeData.map(({ eventType, isChecked }) => {
+        const editFormEventTypeItem = new newEditFormEventTypeItemView({ eventType, isChecked });
+        return editFormEventTypeItem.template;
+      }).join('');
+    }
+
+    /**
+     * Получает список предложений для определённого типа события и выбранных предложений.
+     * @param {string} eventType - Тип события.
+     * @param {Array<string>} selectedOffers - Список выбранных предложений.
+     * @returns {string} - HTML-строка с элементами предложений.
+     */
+    function getEventOfferItemsList(eventType, selectedOffers) {
+      const availableOffers = OFFERS.find((point) => point.type === eventType)?.offers || [];
+      const checkedOffersSet = new Set(selectedOffers);
+
+      return availableOffers.map((offer) => {
+        const { title: offerTitle, price: offerPrice, id } = offer;
+        const offerCheckedAttribute = checkedOffersSet.has(id) ? 'checked' : '';
+        const editFormEventOfferSelector = new newEditFormEventOfferSelectorView({ offerCheckedAttribute, offerTitle, offerPrice });
+        return editFormEventOfferSelector.template;
+      }).join('');
+    }
+
+    /**
+     * Создаёт HTML-секцию с предложениями для формы редактирования.
+     * @param {string} eventOfferItemsList - HTML-строка с элементами предложений.
+     * @returns {string} - HTML-секция с предложениями или пустая строка, если предложений нет.
+     */
+    function createOffersSection(eventOfferItemsList) {
+      return eventOfferItemsList ? new newEditFormOffersSectionView({ eventOfferItemsList }).template : '';
+    }
+
+    /**
+     * Создаёт HTML-секцию с описанием города для формы редактирования.
+     * @param {object} cityInfo - Информация о городе.
+     * @returns {string} - HTML-секция с описанием или пустая строка, если описания нет.
+     */
+    function createDescriptionSection(cityInfo) {
+      return cityInfo.description ? new newEditFormEventDestinationSectionView({ description: cityInfo.description }).template : '';
+    }
+
+    /**
+     * Создаёт контейнер с фотографиями города для формы редактирования.
+     * @param {object} cityInfo - Информация о городе, включая фотографии.
+     * @returns {string} - HTML-контейнер с фотографиями или пустая строка, если фотографий нет.
+     */
+    function createPhotosContainer(cityInfo) {
+      if (!cityInfo.pictures.length) {
+        return '';
+      }
+
+      const pictures = cityInfo.pictures.map((picture) =>
+        new newEditFormEventPhotoView({ src: picture.src, description: picture.description }).template
+      ).join('');
+
+      return new newEditFormEventPhotoContainerView({ pictures }).template;
+    }
+  }
 }
 
 export { EventPresenter };
