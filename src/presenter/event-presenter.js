@@ -32,6 +32,8 @@ export default class EventPresenter {
   #handleDataChange = null;
   #handleModeChange = null;
 
+  #activeForm = null;
+
   #mode = Mode.DEFAULT;
 
   constructor({ onDataChange, tripList, onModeChange }) {
@@ -103,12 +105,17 @@ export default class EventPresenter {
     replace(this.#editFormView, this.#eventView);
     this.#handleModeChange();
     this.#mode = Mode.EDITING;
+    this.#activeForm = this.#editFormView;
   }
 
   // Смена точки формы редактирования события на точку события
   #replaceFormToEvent () {
+    if (this.#activeForm === null) {
+      return;
+    }
     replace(this.#eventView, this.#editFormView);
     this.#mode = Mode.DEFAULT;
+    this.#activeForm = null;
   }
 
   // Обработчик клика по кнопке раскрытия точки маршрута
@@ -117,7 +124,7 @@ export default class EventPresenter {
     document.addEventListener('keydown', this.#onEscapeKeyDown);
   };
 
-  // Обработчик клика по кнопке скрытия формы редактирования точки маршрута
+  // Обработчик подтверждения (submit) формы редактирования точки маршрута
   #onEditFormSubmit = (event) => {
     this.#replaceFormToEvent(event);
     document.removeEventListener('keydown', this.#onEscapeKeyDown);
