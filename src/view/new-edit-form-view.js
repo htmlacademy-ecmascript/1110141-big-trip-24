@@ -14,6 +14,9 @@ import { getDatalistOption, getEventTypeData } from '../utils/form';
 // Импорт моков
 import { DESTINATION_POINTS, OFFERS } from '../mock/event';
 
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+
 /**
  * Получает информацию о городе по идентификатору назначения.
  * @param {string} destinationID - Идентификатор города.
@@ -185,6 +188,8 @@ function createEditFormTemplate (event) {
 export default class NewEditFormView extends AbstractStatefulView {
   #onEditFormSubmit = null;
   #onRollupClick = null;
+  #datepickerFrom = null;
+  #datepickerTo = null;
 
   constructor ({event, onEditFormSubmit, onRollupClick}) {
     super();
@@ -208,7 +213,46 @@ export default class NewEditFormView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', () => this.#destinationChangeHandler());
     this.element.querySelector('.event__type-group').addEventListener('change', (event) => this.#typeChangeHandler(event));
     this.element.querySelector('.event__available-offers').addEventListener('click', (event) => this.#offersListClickHandler(event));
+
+    this.#setDatepickerFrom();
+    this.#setDatepickerTo();
   }
+
+  #setDatepickerFrom = () => {
+    this.#datepickerFrom = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.date_from,
+        onChange: this.#dateFromChangeHandler,
+      }
+    );
+  };
+
+  #setDatepickerTo = () => {
+    this.#datepickerTo = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.date_To,
+        onChange: this.#dateToChangeHandler,
+      }
+    );
+  };
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this._setState({
+      date_from: userDate,
+    });
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this._setState({
+      date_to: userDate,
+    });
+  };
 
   #rollupClickHandler = (event) => {
     event.preventDefault();
@@ -272,5 +316,19 @@ export default class NewEditFormView extends AbstractStatefulView {
 
   reset (event) {
     this.updateElement(NewEditFormView.parseEventToState(event));
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom = null;
+    }
+
+    if (this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo = null;
+    }
   }
 }
