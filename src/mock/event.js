@@ -77,12 +77,12 @@ const OFFERS = [
     offers: [
       {
         id: 1,
-        title: 'Заголовок',
+        title: 'taxi offer',
         price: getRandomInteger()
       },
       {
         id: 2,
-        title: 'Заголовок №2',
+        title: 'another taxi offer',
         price: getRandomInteger()
       }
     ]
@@ -92,17 +92,17 @@ const OFFERS = [
     offers: [
       {
         id: 1,
-        title: 'Заголовок №3',
+        title: 'bus trip',
         price: getRandomInteger()
       },
       {
         id: 2,
-        title: 'Заголовок №4',
+        title: 'express bus',
         price: getRandomInteger()
       },
       {
         id: 3,
-        title: 'Заголовок №5',
+        title: 'night bus',
         price: getRandomInteger()
       }
     ]
@@ -112,9 +112,99 @@ const OFFERS = [
     offers: [
       {
         id: 1,
-        title: 'Заголовок №6',
+        title: 'train ticket',
         price: getRandomInteger()
       },
+    ]
+  },
+  {
+    type: 'ship',
+    offers: [
+      {
+        id: 1,
+        title: 'dream cruise',
+        price: getRandomInteger()
+      },
+      {
+        id: 2,
+        title: 'ferry to treasure island',
+        price: getRandomInteger()
+      }
+    ]
+  },
+  {
+    type: 'drive',
+    offers: [
+      {
+        id: 1,
+        title: 'ford focus rental',
+        price: getRandomInteger()
+      },
+      {
+        id: 2,
+        title: 'delimobil carsharing',
+        price: getRandomInteger()
+      }
+    ]
+  },
+  {
+    type: 'flight',
+    offers: [
+      {
+        id: 1,
+        title: 'flight paris',
+        price: getRandomInteger()
+      },
+      {
+        id: 2,
+        title: 'flight new york',
+        price: getRandomInteger()
+      }
+    ]
+  },
+  {
+    type: 'check-in',
+    offers: [
+      {
+        id: 1,
+        title: 'hilton hotel',
+        price: getRandomInteger()
+      },
+      {
+        id: 2,
+        title: 'friends hostel',
+        price: getRandomInteger()
+      }
+    ]
+  },
+  {
+    type: 'sightseeing',
+    offers: [
+      {
+        id: 1,
+        title: 'kremlin tour',
+        price: getRandomInteger()
+      },
+      {
+        id: 2,
+        title: 'hermitage museum visit',
+        price: getRandomInteger()
+      }
+    ]
+  },
+  {
+    type: 'restaurant',
+    offers: [
+      {
+        id: 1,
+        title: 'pushkin restaurant',
+        price: getRandomInteger()
+      },
+      {
+        id: 2,
+        title: 'shokoladnitsa cafe',
+        price: getRandomInteger()
+      }
     ]
   }
 ];

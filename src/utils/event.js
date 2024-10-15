@@ -56,6 +56,14 @@ const calculateDateDifference = (dateFrom, dateTo) => {
 const getCityInfoByID = (id, cities) => cities.find((city) => city.id === id);
 
 /**
+ * Возвращает искомый по переданному названию город из массива переданных же городов
+ * @param {Number} name Название искомого города
+ * @param {array} cities Массив объектов городов
+ * @returns {object} Объект искомого города
+ */
+const getCityInfoByName = (name, cities) => cities.find((city) => city.name === name);
+
+/**
  * Возвращает информацию о предложении по его ID и типу
  * @param {Number} id ID искомого предложения
  * @param {Array} offers Массив объектов предложений, сгруппированных по типу
@@ -134,4 +142,4 @@ const sortByDay = (eventFirst, eventSecond) => {
 };
 
 
-export { humanizeEventDate, formatDate, calculateDateDifference, getCityInfoByID, getOfferInfoById, isEscapeKey, isEventFuture, isEventPresent, isEventPast, sortByPrice, sortByTime, sortByDay };
+export { humanizeEventDate, formatDate, calculateDateDifference, getCityInfoByID, getOfferInfoById, isEscapeKey, isEventFuture, isEventPresent, isEventPast, sortByPrice, sortByTime, sortByDay, getCityInfoByName };

@@ -98,10 +98,7 @@ export default class TripsPresenter {
   }
 
   #renderEventsList() {
-    for (let i = 0; i < this.#events.length; i++) {
-      const currentEvent = this.#events[i];
-      this.#renderEvent(currentEvent);
-    }
+    this.#events.forEach((event) => this.#renderEvent(event));
   }
 
   /**
@@ -155,6 +152,8 @@ export default class TripsPresenter {
    * @param {event} updatedEvent - Обновленная точка маршрута
    */
   #handleEventChange = (updatedEvent) => {
+    console.log(updatedEvent);
+
     this.#listElement = updateItem(this.#events, updatedEvent);
     this.#sourcedEvents = updateItem(this.#sourcedEvents, updatedEvent);
     this.#eventPresenters.get(updatedEvent.id).init(updatedEvent, this.#tripList);
