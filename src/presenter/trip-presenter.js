@@ -152,6 +152,8 @@ export default class TripsPresenter {
    * @param {event} updatedEvent - Обновленная точка маршрута
    */
   #handleEventChange = (updatedEvent) => {
+    console.log(updatedEvent);
+
     this.#listElement = updateItem(this.#events, updatedEvent);
     this.#sourcedEvents = updateItem(this.#sourcedEvents, updatedEvent);
     this.#eventPresenters.get(updatedEvent.id).init(updatedEvent, this.#tripList);
